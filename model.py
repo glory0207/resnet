@@ -3,7 +3,7 @@ import torch.nn as nn
 from torchvision import models
 
 class MobileScreenClassifier(nn.Module):
-    def __init__(self, num_classes=5, pretrained=True):
+    def __init__(self, num_classes=7, pretrained=True):
         super(MobileScreenClassifier, self).__init__()
         
         # 加载预训练的ResNet50
@@ -37,6 +37,6 @@ class MobileScreenClassifier(nn.Module):
         for param in self.backbone.parameters():
             param.requires_grad = True
 
-def create_model(num_classes=5, pretrained=True):
+def create_model(num_classes=7, pretrained=True):
     model = MobileScreenClassifier(num_classes=num_classes, pretrained=pretrained)
     return model

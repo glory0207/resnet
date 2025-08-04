@@ -116,7 +116,7 @@ class MobileScreenPredictor:
 
 def main():
     # 使用示例
-    predictor = MobileScreenPredictor('mobile_screen_classifier.pth', confidence_threshold=0.6)
+    predictor = MobileScreenPredictor('mobile_screen_classifier.pth', confidence_threshold=0.5)
     
     # 预测单张图片
     image_path = 'test_image.jpg'  # 替换为你的图片路径
@@ -135,7 +135,7 @@ def main():
             print(f"  {class_name}: {prob:.4f}")
     
     # 预测文件夹中的所有图片
-    test_folder = 'data/val/空白页'  # 测试空白页类别
+    test_folder = 'tanchuang_images'  # 测试空白页类别
     if os.path.exists(test_folder):
         results = predictor.predict_folder(test_folder)
         print(f"\n=== 文件夹预测结果 ({test_folder}) ===")
@@ -157,7 +157,7 @@ def main():
     
     # 展示如何调整置信度阈值
     print(f"\n=== 调整置信度阈值示例 ===")
-    predictor.set_confidence_threshold(0.8)  # 更严格的阈值，更容易判断为正常页面
+    predictor.set_confidence_threshold(0.5)  # 更严格的阈值，更容易判断为正常页面
     
     # 如果需要统计分析
     if test_folder and os.path.exists(test_folder):

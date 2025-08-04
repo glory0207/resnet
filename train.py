@@ -49,7 +49,7 @@ def calculate_class_weights(dataset):
     
     return torch.FloatTensor(weights)
 
-def train_model(model, dataloaders, criterion, optimizer, scheduler, num_epochs=25, device='cuda'):
+def train_model(model, dataloaders, criterion, optimizer, scheduler, num_epochs=25, device='cuda', class_names=None):
     since = time.time()
     
     best_model_wts = copy.deepcopy(model.state_dict())
@@ -112,7 +112,8 @@ def train_model(model, dataloaders, criterion, optimizer, scheduler, num_epochs=
             
             if phase == 'val':
                 # 打印详细的分类报告
-                class_names = ['加载不全', '弹窗', '桌面页', '登录页', '空白页']
+                if class_names is None:
+                    class_names = [f'Class_{i}' for i in range(len(set(all_labels)))]
                 print("\n分类报告:")
                 print(classification_report(all_labels, all_preds, target_names=class_names, zero_division=0))
             
@@ -185,7 +186,7 @@ def main():
     scheduler = lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1)
     
     model, _, _, _, _ = train_model(model, dataloaders, criterion, optimizer, scheduler, 
-                                 num_epochs=15, device=device)  # 增加训练轮数
+                                 num_epochs=15, device=device, class_names=classes)  # 增加训练轮数
     
     # 阶段2：解冻部分层进行fine-tuning
     print("\nStage 2: Fine-tuning")
@@ -195,7 +196,7 @@ def main():
     scheduler = lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.1)
     
     model, train_losses, val_losses, train_accs, val_accs = train_model(
-        model, dataloaders, criterion, optimizer, scheduler, num_epochs=20, device=device)
+        model, dataloaders, criterion, optimizer, scheduler, num_epochs=20, device=device, class_names=classes)
     
     # 保存模型
     torch.save({
